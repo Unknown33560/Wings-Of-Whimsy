@@ -76,11 +76,7 @@
       z-index: -1;
       pointer-events: none;
     }
-    canvas#space-canvas {
-      width: 100%;
-      height: 100%;
-      display: block;
-    }
+    canvas#space-canvas { width: 100%; height: 100%; display: block; }
 
     /* HEADER */
     header { text-align: center; padding: 60px 20px 30px; }
@@ -132,18 +128,7 @@
 
     /* BUTTONS */
     .actions { display: flex; flex-direction: column; gap: 15px; width: 100%; }
-    .btn {
-      display: block;
-      padding: 15px;
-      border-radius: 12px;
-      font-size: 1rem;
-      font-weight: bold;
-      text-decoration: none;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 15px rgba(0,0,0,0.4);
-    }
+    .btn { display: block; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: bold; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; transition: all 0.3s ease; box-shadow: 0 0 15px rgba(0,0,0,0.4); }
     .btn-invite { background: linear-gradient(90deg, #5a00ff, #ff008c); color: #fff; }
     .btn-server { background: linear-gradient(90deg, #00e5ff, #2200ff); color: #fff; }
     .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(255,255,255,0.6); }
@@ -209,6 +194,11 @@
     <div>Made by <a href="https://www.instagram.com/unknown33560?igsh=N2k2OG14Ymo4bTA5" target="_blank" rel="noopener noreferrer">unknown33560</a></div>
   </footer>
 
+  <!-- BACKGROUND MUSIC -->
+  <audio id="bg-music" loop>
+    <source src="YOUR_MUSIC_FILE.mp3" type="audio/mpeg">
+  </audio>
+
   <script>
     // DISCORD SERVER STATS
     const SERVER_ID = '1399320457018212484';
@@ -228,77 +218,35 @@
     const spaceCtx = spaceCanvas.getContext("2d");
     let planets = [];
     let meteors = [];
-
-    function resizeSpaceCanvas() {
-      spaceCanvas.width = window.innerWidth;
-      spaceCanvas.height = window.innerHeight;
-    }
+    function resizeSpaceCanvas() { spaceCanvas.width = window.innerWidth; spaceCanvas.height = window.innerHeight; }
     resizeSpaceCanvas();
     window.addEventListener("resize", resizeSpaceCanvas);
 
     class Planet {
-      constructor(x, y, size, color, speed) {
-        this.x = x; this.y = y; this.size = size; this.color = color; this.speed = speed;
-      }
-      update() {
-        this.y += this.speed;
-        if (this.y - this.size > spaceCanvas.height) {
-          this.y = -this.size; this.x = Math.random() * spaceCanvas.width;
-        }
-      }
-      draw() {
-        const gradient = spaceCtx.createRadialGradient(this.x, this.y, this.size * 0.2, this.x, this.y, this.size);
-        gradient.addColorStop(0, this.color);
-        gradient.addColorStop(1, "transparent");
-        spaceCtx.fillStyle = gradient;
-        spaceCtx.beginPath();
-        spaceCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        spaceCtx.fill();
-      }
+      constructor(x, y, size, color, speed) { this.x = x; this.y = y; this.size = size; this.color = color; this.speed = speed; }
+      update() { this.y += this.speed; if (this.y - this.size > spaceCanvas.height) { this.y = -this.size; this.x = Math.random() * spaceCanvas.width; } }
+      draw() { const gradient = spaceCtx.createRadialGradient(this.x, this.y, this.size * 0.2, this.x, this.y, this.size); gradient.addColorStop(0, this.color); gradient.addColorStop(1, "transparent"); spaceCtx.fillStyle = gradient; spaceCtx.beginPath(); spaceCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); spaceCtx.fill(); }
     }
 
     class Meteor {
       constructor() { this.reset(); }
-      reset() {
-        this.x = Math.random() * spaceCanvas.width;
-        this.y = -20;
-        this.len = Math.random() * 80 + 40;
-        this.speed = Math.random() * 6 + 4;
-        this.angle = Math.PI / 4;
-        this.alpha = 1;
-      }
-      update() {
-        this.x += Math.cos(this.angle) * this.speed;
-        this.y += Math.sin(this.angle) * this.speed;
-        this.alpha -= 0.008;
-        if (this.alpha <= 0) this.reset();
-      }
-      draw() {
-        const grad = spaceCtx.createLinearGradient(this.x, this.y, this.x - this.len, this.y - this.len);
-        grad.addColorStop(0, `rgba(255,255,255,${this.alpha})`);
-        grad.addColorStop(1, "transparent");
-        spaceCtx.strokeStyle = grad;
-        spaceCtx.lineWidth = 2;
-        spaceCtx.beginPath();
-        spaceCtx.moveTo(this.x, this.y);
-        spaceCtx.lineTo(this.x - this.len, this.y - this.len);
-        spaceCtx.stroke();
-      }
+      reset() { this.x = Math.random() * spaceCanvas.width; this.y = -20; this.len = Math.random() * 80 + 40; this.speed = Math.random() * 6 + 4; this.angle = Math.PI / 4; this.alpha = 1; }
+      update() { this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed; this.alpha -= 0.008; if (this.alpha <= 0) this.reset(); }
+      draw() { const grad = spaceCtx.createLinearGradient(this.x, this.y, this.x - this.len, this.y - this.len); grad.addColorStop(0, `rgba(255,255,255,${this.alpha})`); grad.addColorStop(1, "transparent"); spaceCtx.strokeStyle = grad; spaceCtx.lineWidth = 2; spaceCtx.beginPath(); spaceCtx.moveTo(this.x, this.y); spaceCtx.lineTo(this.x - this.len, this.y - this.len); spaceCtx.stroke(); }
     }
 
-    const planetColors = ["#7b2ff7", "#00c6ff", "#9d4edd", "#38bdf8"];
-    for (let i = 0; i < 10; i++) {
-      planets.push(new Planet(Math.random() * spaceCanvas.width, Math.random() * spaceCanvas.height, Math.random() * 40 + 20, planetColors[Math.floor(Math.random() * planetColors.length)], Math.random() * 0.3 + 0.05));
-    }
-    for (let i = 0; i < 5; i++) meteors.push(new Meteor());
+    const planetColors = ["#7b2ff7","#00c6ff","#9d4edd","#38bdf8"];
+    for (let i=0;i<10;i++) planets.push(new Planet(Math.random()*spaceCanvas.width, Math.random()*spaceCanvas.height, Math.random()*40+20, planetColors[Math.floor(Math.random()*planetColors.length)], Math.random()*0.3+0.05));
+    for (let i=0;i<5;i++) meteors.push(new Meteor());
 
-    function animateSpace() {
-      spaceCtx.clearRect(0, 0, spaceCanvas.width, spaceCanvas.height);
-      planets.forEach(p => { p.update(); p.draw(); });
-      meteors.forEach(m => { m.update(); m.draw(); });
-      requestAnimationFrame(animateSpace);
-    }
+    function animateSpace() { spaceCtx.clearRect(0,0,spaceCanvas.width,spaceCanvas.height); planets.forEach(p=>{p.update();p.draw();}); meteors.forEach(m=>{m.update();m.draw();}); requestAnimationFrame(animateSpace); }
     animateSpace();
+
+    // BACKGROUND MUSIC (Autoplay on first interaction)
+    const bgMusic = document.getElementById("bg-music");
+    function playMusicOnce() { bgMusic.play().catch(()=>{ console.log("Audio blocked"); }); window.removeEventListener("click", playMusicOnce); window.removeEventListener("touchstart", playMusicOnce); }
+    window.addEventListener("click", playMusicOnce);
+    window.addEventListener("touchstart", playMusicOnce);
   </script>
 </body>
-</html>
+  </html>
