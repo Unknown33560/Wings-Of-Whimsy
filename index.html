@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Wings Of Whimsy</title>
+  <style>
+    /* RESET */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      background: #05010f;
+      color: #fff;
+      overflow: hidden;
+      padding: 0 20px;
+    }
+
+    /* STAR BACKGROUND */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -4;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px),
+                  radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 2px);
+      background-size: 120px 120px, 200px 200px;
+      animation: starDrift 120s linear infinite;
+    }
+    @keyframes starDrift {
+      0% { background-position: 0 0, 0 0; }
+      100% { background-position: 4000px 2000px, -2000px 1500px; }
+    }
+
+    /* NEBULA OVERLAYS */
+    .glow-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      background: radial-gradient(circle at 30% 20%, rgba(120,0,255,0.25), transparent 70%),
+                  radial-gradient(circle at 70% 80%, rgba(0,200,255,0.25), transparent 70%),
+                  radial-gradient(circle at 50% 50%, rgba(255,20,147,0.15), transparent 80%);
+      filter: blur(150px);
+      animation: nebulaShift 60s ease-in-out infinite alternate;
+    }
+    @keyframes nebulaShift {
+      0% { transform: translate(0,0) scale(1); }
+      50% { transform: translate(100px,-50px) scale(1.2); }
+      100% { transform: translate(-80px,40px) scale(1.05); }
+    }
+
+    /* GALACTIC WAVE */
+    .wave-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background: linear-gradient(270deg, #5a00ff, #00e5ff, #ff008c, #2200ff);
+      background-size: 1000% 1000%;
+      opacity: 0.2;
+      animation: galacticWave 80s ease infinite;
+    }
+    @keyframes galacticWave {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* OUTER SPACE CANVAS */
+    .space-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+    }
+    canvas#space-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* HEADER */
+    header { text-align: center; padding: 60px 20px 30px; }
+    header h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #ff008c, #5a00ff, #00e5ff);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+      animation: galaxyTitle 10s ease-in-out infinite alternate;
+    }
+    @keyframes galaxyTitle {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 100% 50%; }
+    }
+    header p { margin-top: 10px; font-size: 1.2rem; opacity: 0.85; }
+
+    /* MAIN CARD */
+    .card {
+      max-width: 600px;
+      width: 100%;
+      background: rgba(20,20,40,0.7);
+      backdrop-filter: blur(25px);
+      box-shadow: 0 0 40px rgba(90,0,255,0.4);
+      border-radius: 20px;
+      padding: 40px 30px;
+      margin-bottom: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 25px;
+      text-align: center;
+      animation: fadeIn 1.2s ease, galaxyPulse 8s ease-in-out infinite;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes galaxyPulse {
+      0%, 100% { box-shadow: 0 0 40px rgba(0,229,255,0.4); }
+      50% { box-shadow: 0 0 70px rgba(255,0,140,0.6); }
+    }
+    .card h2 { font-size: 1.6rem; font-weight: 600; }
+
+    /* SERVER STATS */
+    .stats { display: flex; gap: 30px; font-size: 1.2rem; }
+    .stats div { display: flex; flex-direction: column; align-items: center; }
+    .stats .number { font-size: 2rem; font-weight: bold; color: #00e5ff; text-align: center; }
+    .stats .label { font-size: 0.9rem; opacity: 0.8; }
+
+    /* BUTTONS */
+    .actions { display: flex; flex-direction: column; gap: 15px; width: 100%; }
+    .btn {
+      display: block;
+      padding: 15px;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: bold;
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    }
+    .btn-invite { background: linear-gradient(90deg, #5a00ff, #ff008c); color: #fff; }
+    .btn-server { background: linear-gradient(90deg, #00e5ff, #2200ff); color: #fff; }
+    .btn:hover { transform: scale(1.05); box-shadow: 0 0 25px rgba(255,255,255,0.6); }
+
+    /* FOOTER */
+    footer {
+      font-size: 0.85rem;
+      text-align: center;
+      padding: 8px;
+      margin-bottom: 20px;
+      opacity: 0.85;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: center;
+      animation: fadeInFooter 1.5s ease forwards;
+    }
+    @keyframes fadeInFooter { from { opacity: 0; transform: translateY(15px); } to { opacity: 0.85; transform: translateY(0); } }
+    footer a { color: #00e5ff; text-decoration: none; font-weight: 600; }
+    footer a:hover { text-decoration: underline; }
+    .owner { font-size: 0.95rem; font-weight: 600; color: rgba(255,255,255,0.9); }
+    .owner .owner-name { color: #ff80d5; }
+
+    /* RESPONSIVE */
+    @media (min-width: 600px) { .actions { flex-direction: row; justify-content: center; } .btn { flex: 1; } }
+  </style>
+</head>
+<body>
+  <!-- BACKGROUND EFFECTS -->
+  <div class="glow-overlay"></div>
+  <div class="wave-overlay"></div>
+
+  <!-- OUTER SPACE ANIMATION -->
+  <div class="space-overlay">
+    <canvas id="space-canvas"></canvas>
+  </div>
+
+  <!-- HEADER -->
+  <header>
+    <h1>𓆰 Wings Of Whimsy 𓆪</h1>
+    <p>Your gateway to an amazing Discord community.</p>
+  </header>
+
+  <!-- MAIN CARD -->
+  <main class="card">
+    <h2>Server Stats</h2>
+    <div class="stats">
+      <div></div>
+      <div>
+        <span id="online-members" class="number">—</span>
+        <span class="label">Active Now</span>
+      </div>
+    </div>
+    <div class="actions">
+      <a class="btn btn-invite" href="https://discord.com/oauth2/authorize?client_id=1406242589740503181&permissions=8&integration_type=0&scope=bot" target="_blank" rel="noopener noreferrer">Invite Bot</a>
+      <a class="btn btn-server" href="https://discord.gg/ueD8bjawaF" target="_blank" rel="noopener noreferrer">Join Server</a>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="owner">Server owner: <span class="owner-name">herrrx_</span></div>
+    <div>Made by <a href="https://www.instagram.com/unknown33560?igsh=N2k2OG14Ymo4bTA5" target="_blank" rel="noopener noreferrer">unknown33560</a></div>
+  </footer>
+
+  <script>
+    // DISCORD SERVER STATS
+    const SERVER_ID = '1399320457018212484';
+    async function fetchServerStats() {
+      try {
+        const response = await fetch(`https://discord.com/api/guilds/${SERVER_ID}/widget.json`);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const data = await response.json();
+        document.getElementById('online-members').textContent = data.presence_count;
+      } catch (error) { console.error('Could not fetch server stats:', error); }
+    }
+    fetchServerStats();
+    setInterval(fetchServerStats, 60 * 1000);
+
+    // OUTER SPACE ANIMATION
+    const spaceCanvas = document.getElementById("space-canvas");
+    const spaceCtx = spaceCanvas.getContext("2d");
+    let planets = [];
+    let meteors = [];
+
+    function resizeSpaceCanvas() {
+      spaceCanvas.width = window.innerWidth;
+      spaceCanvas.height = window.innerHeight;
+    }
+    resizeSpaceCanvas();
+    window.addEventListener("resize", resizeSpaceCanvas);
+
+    class Planet {
+      constructor(x, y, size, color, speed) {
+        this.x = x; this.y = y; this.size = size; this.color = color; this.speed = speed;
+      }
+      update() {
+        this.y += this.speed;
+        if (this.y - this.size > spaceCanvas.height) {
+          this.y = -this.size; this.x = Math.random() * spaceCanvas.width;
+        }
+      }
+      draw() {
+        const gradient = spaceCtx.createRadialGradient(this.x, this.y, this.size * 0.2, this.x, this.y, this.size);
+        gradient.addColorStop(0, this.color);
+        gradient.addColorStop(1, "transparent");
+        spaceCtx.fillStyle = gradient;
+        spaceCtx.beginPath();
+        spaceCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        spaceCtx.fill();
+      }
+    }
+
+    class Meteor {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * spaceCanvas.width;
+        this.y = -20;
+        this.len = Math.random() * 80 + 40;
+        this.speed = Math.random() * 6 + 4;
+        this.angle = Math.PI / 4;
+        this.alpha = 1;
+      }
+      update() {
+        this.x += Math.cos(this.angle) * this.speed;
+        this.y += Math.sin(this.angle) * this.speed;
+        this.alpha -= 0.008;
+        if (this.alpha <= 0) this.reset();
+      }
+      draw() {
+        const grad = spaceCtx.createLinearGradient(this.x, this.y, this.x - this.len, this.y - this.len);
+        grad.addColorStop(0, `rgba(255,255,255,${this.alpha})`);
+        grad.addColorStop(1, "transparent");
+        spaceCtx.strokeStyle = grad;
+        spaceCtx.lineWidth = 2;
+        spaceCtx.beginPath();
+        spaceCtx.moveTo(this.x, this.y);
+        spaceCtx.lineTo(this.x - this.len, this.y - this.len);
+        spaceCtx.stroke();
+      }
+    }
+
+    const planetColors = ["#7b2ff7", "#00c6ff", "#9d4edd", "#38bdf8"];
+    for (let i = 0; i < 10; i++) {
+      planets.push(new Planet(Math.random() * spaceCanvas.width, Math.random() * spaceCanvas.height, Math.random() * 40 + 20, planetColors[Math.floor(Math.random() * planetColors.length)], Math.random() * 0.3 + 0.05));
+    }
+    for (let i = 0; i < 5; i++) meteors.push(new Meteor());
+
+    function animateSpace() {
+      spaceCtx.clearRect(0, 0, spaceCanvas.width, spaceCanvas.height);
+      planets.forEach(p => { p.update(); p.draw(); });
+      meteors.forEach(m => { m.update(); m.draw(); });
+      requestAnimationFrame(animateSpace);
+    }
+    animateSpace();
+  </script>
+</body>
+</html>
